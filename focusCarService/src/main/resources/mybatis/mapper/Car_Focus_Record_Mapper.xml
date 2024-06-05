@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zbh.dao.CarFocusRecordDao">
+    <resultMap id="BaseResultMap" type="com.zbh.entity.po.CarFocusRecord">
+        <id property="recordId" column="record_id"/>
+        <result property="licensePlateNumber" column="license_plate_number"/>
+        <result property="plateColor" column="plate_color"/>
+        <result property="parkRange" column="park_range"/>
+        <result property="recordTime" column="record_time"/>
+        <result property="validityPeriodStart" column="validity_period_start"/>
+        <result property="validityPeriodEnd" column="validity_period_end"/>
+        <result property="pushMessage" column="push_message"/>
+        <result property="pusherName" column="pusher_name"/>
+        <result property="pusherPhone" column="pusher_phone"/>
+    </resultMap>
+
+    <insert id="insertFocusCar" parameterType="com.zbh.entity.po.CarFocusRecord">
+        insert into record_car_focus (license_plate_number, plate_color, park_range, record_time, validity_period_start, validity_period_end, push_message, pusher_name, pusher_phone)
+        values (#{licensePlateNumber}, #{plateColor}, #{parkRange}, #{recordTime}, #{validityPeriodStart}, #{validityPeriodEnd}, #{pushMessage}, #{pusherName}, #{pusherPhone})
+        ON DUPLICATE KEY UPDATE
+        plate_color = #{plateColor},
+        park_range = #{parkRange},
+        validity_period_start = #{validityPeriodStart},
+        validity_period_end = #{validityPeriodEnd},
+        push_message = #{pushMessage},
+        pusher_name = #{pusherName},
+        pusher_phone = #{pusherPhone}
+    </insert>
+
+    <delete id="deleteByLicensePlateNumber" parameterType="java.lang.String">
+        delete from record_car_focus where license_plate_number = #{licensePlateNumber}
+    </delete>
+
+    <update id="updateFocusCar" parameterType="com.zbh.entity.po.CarFocusRecord">
+        update record_car_focus set
+        plate_color = #{plateColor},
+        park_range = #{parkRange},
+        validity_period_start = #{validityPeriodStart},
+        validity_period_end = #{validityPeriodEnd},
+        push_message = #{pushMessage},
+        pusher_name = #{pusherName},
+        pusher_phone = #{pusherPhone}
+        where license_plate_number = #{licensePlateNumber}
+    </update>
+
+    <select id="selectByMultipleConditional" resultMap="BaseResultMap">
+        select * from record_car_focus
+        <where>
+            <if test="parkId != null">
+<!--                and JSON_CONTAINS(park_range, #{parkId})-->
+                and park_range like CONCAT('%', #{parkId}  ,'%')
+            </if>
+            <if test="licensePlateNumber != null">
+                and license_plate_number like CONCAT('%', #{licensePlateNumber},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByLicensePlateNumber" resultMap="BaseResultMap">
+        select * from record_car_focus where license_plate_number = #{licensePlateNumber}
+    </select>
+
+
+</mapper>

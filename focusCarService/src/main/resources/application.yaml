@@ -1,0 +1,67 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/park_control?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+  jackson:
+    time-zone: Asia/Shanghai
+    default-property-inclusion: NON_EMPTY
+    date-format: yyyy-MM-dd HH:mm:ss
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    lettuce:
+      pool:
+        max-idle: 5     # 最大空闲连接数，默认5
+        min-idle: 0     # 最小空闲连接数，默认0
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      batch-size: 16384
+      acks: 1
+      retries: 10
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: default-group
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      auto-commit-interval: 1s
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 20
+      properties:
+        #如果在这个时间内没有收到心跳，该消费者会被踢出组并出发组在平衡
+        session:timeout:ms: 120000
+        #配置控制端等待请求响应的最长时间。
+        #如果在超时之前没有收到响应，客户端将在必要时重新发送请求。
+        #如果重试次数用尽，则请求失败。
+        request:timeout:ms: 60000
+        #最大消费时间，决定获取消息后提交偏移量的最大时间，超过设定时间后，消费者会认为该消费者已经挂掉，并触发组在平衡
+        max:poll:interval:ms: 300000
+        allow:auto:create:topics: true
+        heartbeat:interval:ms: 40000
+        debug: false
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+logging:
+  pattern:
+    dateformat: yyyy-MM-dd HH:mm:ss
+  level:
+    org.apache.kafka: WARN

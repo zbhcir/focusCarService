@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zbh.dao.TrackRecordDao">
+    <resultMap id="BaseResultMap" type="com.zbh.entity.po.TrackRecord">
+        <id column="record_id" property="recordId"/>
+        <result column="license_plate_number" property="licensePlateNumber"/>
+        <result column="plate_color" property="plateColor"/>
+        <result column="park_id" property="parkId"/>
+        <result column="park_name" property="parkName"/>
+        <result column="status_time" property="statusTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    
+    <insert id="insertTrack" parameterType="com.zbh.entity.po.TrackRecord">
+        insert into record_track (license_plate_number, plate_color, park_id, park_name, status_time, status)
+        values (#{licensePlateNumber}, #{plateColor}, #{parkId}, #{parkName}, #{statusTime}, #{status})
+    </insert>
+
+    <select id="selectByConditional" resultMap="BaseResultMap">
+        select * from record_track
+        <where>
+            <if test="licensePlateNumber != null">
+                and license_plate_number = #{licensePlateNumber}
+            </if>
+            <if test="plateColor != null">
+                and plate_color = #{plateColor}
+            </if>
+            <if test="startTime != null">
+                and status_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                and status_time &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+
+</mapper>
